@@ -76,7 +76,7 @@ data class Book(
 
   companion object {
     const val ID_UNKNOWN = -1L
-    const val SPEED_MAX = 2.5F
+    const val SPEED_MAX = 6.0F
     const val SPEED_MIN = 0.5F
   }
 }

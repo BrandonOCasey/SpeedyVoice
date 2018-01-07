@@ -1,3 +1,6 @@
+# Changes from the main codebase
+* Change max playback speed to 6 instead of 2.5
+
 Voice
 =======================
 [![CI Status](https://circleci.com/gh/PaulWoitaschek/Voice.svg?&style=shield&circle-token=3e7023d997fb5667ed60f751f963aaaf8c1f02d4)](https://circleci.com/gh/PaulWoitaschek/Voice)

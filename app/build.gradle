@@ -27,15 +27,10 @@ android {
 
   signingConfigs {
     release {
-      def signingPropFile = new File('signing.properties')
-      def signingDetailsProvider = new SigningDetailsProvider()
-      def signingDetails = signingDetailsProvider.provide(signingPropFile)
-      if (signingDetails != null) {
-        storeFile = signingDetails.storeFile
-        storePassword = signingDetails.storePassword
-        keyAlias = signingDetails.keyAlias
-        keyPassword = signingDetails.keyPassword
-      }
+      storeFile new File('.keystore')
+      storePassword "$System.env.storepass"
+      keyAlias "speedy-voice"
+      keyPassword "$System.env.keypass"
     }
   }
 
