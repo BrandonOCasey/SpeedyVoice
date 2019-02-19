@@ -1,3 +1,6 @@
+# Changes from the main codebase
+* Change max playback speed to 6 instead of 2.5
+
 Voice [![CI Status](https://img.shields.io/bitrise/9a019fd662ba4b7f/master.svg?token=xxw4jv2fGrT9Dwxhm0K9ng)](https://app.bitrise.io/app/9a019fd662ba4b7f#/builds)
 =======================
 
@@ -10,7 +13,7 @@ Voice [![CI Status](https://img.shields.io/bitrise/9a019fd662ba4b7f/master.svg?t
   <img alt="Get it on Google Play"
        height="80"
        src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" />
-</a>  
+</a>
 
 This is my digital playground where I am learning. I'm integrating and validating new technologies and ideas here, playing around with new UI / UX components and developing with the best coding standard I come up with.
 

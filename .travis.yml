@@ -1,0 +1,48 @@
+sudo: required
+language: android
+before_cache:
+- rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+- rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  directories:
+  - "$HOME/.gradle/caches/"
+  - "$HOME/.gradle/wrapper/"
+  - "$HOME/.android/build-cache"
+env:
+  global:
+  - ADB_INSTALL_TIMEOUT=8
+  - ANDROID_API=28
+  - ANDROID_BUILD_TOOLS=26.1.1
+  - GRADLE_OPTS='-Dorg.gradle.daemon=false -Dorg.gradle.jvmargs="-Xmx4048m -XX:+HeapDumpOnOutOfMemoryError"'
+  - secure: SHo1aYIAIZucnedAJ59L3WGttDd1LLSXd3claqACZorMyr0OpATVx2YaX6jOoMInerhAPJZ/yr/BaEaQbIMrkmzmRXX5oi/hqbIh+zu9HAMm4jmm4/5ce4jLOiuRDlqkIvBEasZMwcyefqAoldr00FGmt3wu6vSX1GhdmFlOMU2h6AbI+XeOpjpQuLjm2DUdkCnb18oXOXyy2+bQRbh5Igh/R4f76zlN4xDz3xEiQk7eimTtJMyanF+VqNP8LFyvOS5Uw8LFK2x9qnDkTF9T3ldl012K2YfJIyUp2DC/ljGWHpHAtB47Xr26YhnLmrDrDeC30cNlyawEiGRSl7WYs1euEO1lQnPZQ1DC1cBUfATkeCEfhNHe5rLcvYJ6aF5ZEmTq5fVKv07SiUyp86e5xUVzbdB652XELdHrP+FnDK0o/N25souVklml9sIcZu/w7h338zonPmOjE31s4vI7C6mmObQVPGmgGpyNi8QK2B2SaTDgvPztv8m+D3t+2TgTFTe030Nmx+prWLum6FzgY96kxAeiBvJexRAVB26QCyxhdBHlVA4jjFvhklCGguDceeczBtDz+EkEMowj0wUJ09T4tLIg5Rpz61nP+ShwGAfzBDUoRG3eRdLOZ7mnO62JFNzWdN5vv5KIivUo6kc/nQYhn6SYIMS1C2a5VrkJQAY=
+  - secure: VJ0fMAXoE6DZCd0Rv09NOSLZ97E3Wza0PIJhVx4cvM3CaMO3n2wjnFI4KBYYsX2Hz19JQhtLSYruuYUHK9xmstIHkioIKOmZRwGHerNqufEk3n5CvJhzHX9Qt/jQiNujaNXbXBsjY00JHAdb173CjowAEV8CMjHG2IZ1kHBu2+H2BJcdZhEuV3vQyvKJECdYSuqBBjXlDwBuPx1OOFahArjLPiqR+MW+vMdG7BARqSEP3Ez/+k7yRRIbGMQZa6mwayhm1kjyoEyCUXn0A2wRxN3hWfEa570l4EIX2Cp3uCea5JpOoEhv3aAHy2E/wPaEw4bPS4ZNpqkeeF3pzrPwBPc/LEx/TRsIoXpDpXrnDaTkKPXFITS0drhI2BZ0N7AS6mp+4pq2TlUZW2rAuJkMAZ16GxqgREWo85q5x7eGJMOM309bhzVGHGlRYUvugOOqKj3DsINfAl6qvKt/7kF9LgCI9tDchQ2NTbpdTO9NZ3ZqHaipSqIlfJRFy3PVezBbL7enhqXz/vvZP5DjxYEAER/qo8LDt8T42UQtGmaiXQbY2y1anl/JulrFCSWRXC+y3vGIh1XvYT5vOTiBGiqMyHeUJUkKXyL1gse528Ce40yLpwP20U0UF8cUL/YH2xswetMDTKutmn5zsBx4NsLlmRl6T5ndUjvTPEPKASFUzO8=
+android:
+  components:
+  - tools
+  - tools
+  - platform-tools
+  - android-$(ANDROID_API)
+  - build-tools-${ANDROID_BUILD_TOOLS}
+  - extra
+  - sys-img-armeabi-v7a-android-${ANDROID_API}
+  - extra-android-m2repository
+before_install:
+- yes | sudo /usr/local/android-sdk/tools/bin/sdkmanager --update
+- openssl aes-256-cbc -K $encrypted_bf54ab582d3b_key -iv $encrypted_bf54ab582d3b_iv
+  -in .keystore.enc -out .keystore -d
+- cp .keystore app/.keystore
+script:
+- "./gradlew app:assembleProprietaryRelease -x lint -x lintVitalProprietaryRelease
+  -p ."
+before_deploy:
+- "./gradlew assembleRelease"
+- cp app/build/outputs/apk/opensource/release/*.apk "$HOME/voice.apk"
+deploy:
+  provider: releases
+  on:
+    tags: true
+  file: "$HOME/voice.apk"
+  skip_cleanup: true
+  overwrite: true
+  api-key:
+    secure: DhynqErJiJLaAhKoqlGHct8r6cLfbPgEIV07ka/8t2uf5EefQQZHEvSsu3b4T2BJG6w86f9GdDFXuD67Z9j+6tEHwzHOnegycE3QXTmgi+NabAOaIDheGFkapAU+SVQbpa9CMief/EVXE5bD20xNEHWgHkKPeOCnXHnigX7RAHlFwiP/pbhT5LZO+xhQ5vxDTod/RJM4UNPSEUb1VcIxv2XN1LICD3px2lFQkUxZ/xhySRT3rMVRnDXZgnRcbTm+cNuWQbre+pM5L8w4jdop7j0I66hcuSlYNXgj3XjFxrLPdOL1hq7XV5F4Aqos5dRGNKY64Iow2WjbbDXRb7keG24yc1bMSCBXKLSarnfY9AYXVLDNMwTEDjo7dOX3V0My4I2AtadxO9NYFCxthng4zEZ3h/6RKiw8DS0+5MsMEs3nyEQRu6fOBYklBSF4qERjovxSOJYevGgtGhCrV6gwE0S6uLc/LfWh+uVzTZzgCj3uZaDFjBtZ73oNxl4XP4MlpRVJlJFmeOVk9Zk2LPlHoXpg7VTgL5g+zC16Pm8HGJejm7scMDaAN2yZHo+CPe9DqEdNW37DzDWEzntE13JHWYERFTG6QRZB+qZeWcOA4Gtkf3mNtwN/RYMH1LokJpp6PdtmaJ88IYBye0xusOdDd2lBd2BnE0hmI/Yl8a7+rWY=
